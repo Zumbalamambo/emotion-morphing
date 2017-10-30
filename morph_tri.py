@@ -100,3 +100,4 @@ def morph_tri(im1, im2, im1_pts, im2_pts, warp_frac, dissolve_frac):
     morphed_im[frame_num] = morphed_frame.astype(np.uint8)
 
   return morphed_im
+  
