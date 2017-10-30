@@ -7,11 +7,6 @@
 from scipy.sparse import linalg
 import numpy as np
 
-from getIndexes import getIndexes
-from getCoefficientMatrix import getCoefficientMatrix
-from getSolutionVect import getSolutionVect
-from reconstructImg import reconstructImg
-
 def getIndexes(mask, targetH, targetW, offsetX, offsetY):
   indexes = np.zeros((targetH, targetW))
   mask_x, mask_y = np.nonzero(mask)
