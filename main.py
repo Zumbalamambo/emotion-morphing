@@ -4,6 +4,9 @@ import numpy as np
 from PIL import Image
 import glob
 
+WARP_FRAC = 0.5
+DISSOLVE_FRAC = 0.5
+
 def create_frames(src, tgt):
     print("Creating source frames")
     src_frames, _ = video_to_image(src, 'src')
