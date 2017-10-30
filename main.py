@@ -1,30 +1,38 @@
 from get_mouth import get_mouth
 from video_to_image import video_to_image
 import numpy as np
+from PIL import Image
+import glob
 
-# convert the trump video to frames
-frames, frame_count = video_to_image('videos/trump.mp4')
-print(frame_count)
+def create_frames(src, tgt):
+    print("Creating source frames")
+    src_frames, _ = video_to_image(src, 'src')
+    print("Creating target frames")
+    tgt_frames, _ = video_to_image(tgt, 'tgt')
+    return src_frames, tgt_frames
+
+def read_frames(label):
+    image_list = []
+    for filename in glob.glob('frames/' + label + '*.jpg'):
+        im = Image.open(filename).convert('RGB')
+        im = np.array(im, dtype=np.uint8)
+        image_list.append(im)
+    return np.array(image_list)
+
+
+# main code
+# src_frames, tgt_frames = create_frames('videos/trump.mp4', 'videos/obama.mp4')
+src_frames = read_frames('src')
+tgt_frames = read_frames('tgt')
 
 count = 0
-(tr, tc, _) = frames[0].shape
-ntc = int(tc / 2.0)
-offset = int(ntc / 2.0)
-for frame in frames:
-    # resize each image to 
-    cropped_frame = np.zeros((tr, ntc, 3))
-    for i in range(ntc):
-        cropped_frame[:, i] = frame[:, i + offset]
-    mouth, bb = get_mouth("trump", cropped_frame, count)
+for frame in src_frames:    
+    mouth, bb = get_mouth("src", frame, count)
     count += 1
 
-# convert the obama video to frames
-frames, frame_count = video_to_image('videos/obama.mp4')
-print(frame_count)
-
 count = 0
-for frame in frames:
-    mouth, bb = get_mouth("obama", frame, count)
+for frame in tgt_frames:
+    mouth, bb = get_mouth("tgt", frame, count)
     count += 1
 
 
