@@ -12,6 +12,7 @@ def create_frames(src, tgt):
     return src_frames, tgt_frames
 
 def read_frames(label):
+    print("Reading in " + label + " frames")
     image_list = []
     for filename in glob.glob('frames/' + label + '*.jpg'):
         im = Image.open(filename).convert('RGB')
@@ -27,14 +28,12 @@ tgt_frames = read_frames('tgt')
 
 count = 0
 for frame in src_frames:    
-    mouth, bb = get_mouth("src", frame, count)
+    pixels, mouth, o = get_mouth("src", frame, count)
     count += 1
 
 count = 0
 for frame in tgt_frames:
-    mouth, bb = get_mouth("tgt", frame, count)
+    pixels, mouth, o = get_mouth("tgt", frame, count)
     count += 1
-
-
 
 
