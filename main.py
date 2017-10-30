@@ -2,14 +2,19 @@ from get_mouth import get_mouth
 from video_to_image import video_to_image
 from blending import seamlessCloningPoisson
 from morph_tri import morph_tri
+from matplotlib.animation import FuncAnimation
+
 import numpy as np
 import cv2
 from PIL import Image, ImageDraw
 import glob
 import matplotlib.pyplot as plt
 
-WARP_FRAC = 0.5
-DISSOLVE_FRAC = 0.5
+video = []
+
+def update(frame):
+  plt.imshow(video[0][frame])
+  plt.axis('off')
 
 def create_frames(src, tgt):
     print("Creating source frames")
@@ -95,12 +100,12 @@ def generate_video_frames():
 
 
 
-
-
 generate_video_frames()
 create_video('output-02-warp')
 
-# plt.imshow(final_video[0])
-# plt.show()
+# video.append(final_video)
+# fig = plt.figure()
+# anim = FuncAnimation(fig, update, frames=np.arange(0, len(src_frames)), interval=3)
+# anim.save('result.gif', writer='imagemagick')
 
 
