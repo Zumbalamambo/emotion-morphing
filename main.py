@@ -3,6 +3,7 @@ from video_to_image import video_to_image
 import numpy as np
 from PIL import Image
 import glob
+import matplotlib.pyplot as plt
 
 WARP_FRAC = 0.5
 DISSOLVE_FRAC = 0.5
