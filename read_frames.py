@@ -14,11 +14,10 @@ def videoToImage(filename):
     while success:
         success, image = vidcap.read()
         frames.append(image)
-        print('Read a new frame: ', success)
         cv2.imwrite("frames/frame%d.jpg" % frame_count, image)     # save frame as JPEG file
         frame_count += 1
         
     return np.array(frames), frame_count
 
 
-print(videoToImage('videos/test.mp4'))
+print(videoToImage('videos/obama.mp4'))
