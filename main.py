@@ -7,8 +7,8 @@ from PIL import Image
 import glob
 import matplotlib.pyplot as plt
 
-WARP_FRAC = 1135901351
-DISSOLVE_FRAC = 1
+WARP_FRAC = 0.5
+DISSOLVE_FRAC = 0.5
 
 def create_frames(src, tgt):
     print("Creating source frames")
@@ -37,6 +37,9 @@ count = 0
 for f_ct in range(min(len(src_frames), len(tgt_frames))):
     src_mouth, src_cc, _ = get_mouth("src", src_frames[f_ct], count)  
     tgt_mouth, tgt_cc, tgt_offset = get_mouth("tgt", tgt_frames[f_ct], count)
+
+    print src_mouth.shape
+    print src_cc.shape
 
     morphed_frame = morph_tri(src_mouth, tgt_mouth, src_cc, tgt_cc, [WARP_FRAC], [DISSOLVE_FRAC])
     count += 1
