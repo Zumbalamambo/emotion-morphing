@@ -37,19 +37,17 @@ count = 0
 for f_ct in range(min(len(src_frames), len(tgt_frames))):
     src_mouth, src_cc, _ = get_mouth("src", src_frames[f_ct], count)  
     tgt_mouth, tgt_cc, tgt_offset = get_mouth("tgt", tgt_frames[f_ct], count)
-
-    print src_mouth.shape
-    print src_cc.shape
+    count += 1
 
     morphed_frame = morph_tri(src_mouth, tgt_mouth, src_cc, tgt_cc, [WARP_FRAC], [DISSOLVE_FRAC])
-    count += 1
-    break
 
     ## blend this back into the original image.
-    # result_frame = seamlessCloningPoisson(morphed_frame, tgt_frames[f_ct], tgt_offset[f_ct])
-    # final_video.append(result_frame)
+    mask = np.ones((75, 75))
+    result_frame = seamlessCloningPoisson(morphed_frame[0], tgt_frames[f_ct], mask, tgt_offset[0], tgt_offset[1])
+    final_video.append(result_frame)
+    break
 
-plt.imshow(morphed_frame[0])
+plt.imshow(result_frame[0])
 plt.show()
 
 

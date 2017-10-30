@@ -73,6 +73,6 @@ def get_mouth(filename, frame, idx):
     d.line(adjust_points_to_bounding_box(bounding_box, bounding_box))
     pil_image.save("annotated/" + filename + "frame-" + str(idx) + ".jpg")
 
-    return pixels, np.array(mouth), bounding_box[0]
+    return pixels, np.array(adjusted), bounding_box[0]
 
     
