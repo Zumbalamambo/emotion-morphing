@@ -1,12 +1,14 @@
 from get_mouth import get_mouth
 from video_to_image import video_to_image
+from blending import seamlessCloningPoisson
+from morph_tri import morph_tri
 import numpy as np
 from PIL import Image
 import glob
 import matplotlib.pyplot as plt
 
-WARP_FRAC = 0.5
-DISSOLVE_FRAC = 0.5
+WARP_FRAC = 1135901351
+DISSOLVE_FRAC = 1
 
 def create_frames(src, tgt):
     print("Creating source frames")
@@ -30,34 +32,19 @@ def read_frames(label):
 src_frames = read_frames('src')
 tgt_frames = read_frames('tgt')
 
-count = 0
-src_mouths, src_cc = [], []
-for frame in src_frames:    
-    mouth, cc, offset = get_mouth("src", frame, count)
-    src_mouths.append(mouth)
-    src_cc.append(cc)
-    count += 1
-    break
-
-count = 0
-tgt_mouths, tgt_cc, tgt_offset = [], [], []
-for frame in tgt_frames:
-    mouth, cc, offset = get_mouth("tgt", frame, count)
-    tgt_mouths.append(mouth)
-    tgt_cc.append(cc)
-    tgt_offset.append(offset)
-    count += 1
-    break
-
 final_video = []
-for f_ct in xrange(min(len(src_mouths, tgt_mouths))):
-    morphed_frame = morph_tri(src_mouths[f_ct], tgt_mouths[f_ct], src_cc[f_ct], tgt_cc[f_ct], WARP_FRAC, DISSOLVE_FRAC)
+count = 0
+for f_ct in range(min(len(src_frames), len(tgt_frames))):
+    src_mouth, src_cc, _ = get_mouth("src", src_frames[f_ct], count)  
+    tgt_mouth, tgt_cc, tgt_offset = get_mouth("tgt", tgt_frames[f_ct], count)
 
+    morphed_frame = morph_tri(src_mouth, tgt_mouth, src_cc, tgt_cc, [WARP_FRAC], [DISSOLVE_FRAC])
+    count += 1
     break
 
     ## blend this back into the original image.
-    result_frame = seamlessCloningPoisson(morphed_frame, tgt_frames[f_ct], tgt_offset[f_ct])
-    final_video.append(result_frame)
+    # result_frame = seamlessCloningPoisson(morphed_frame, tgt_frames[f_ct], tgt_offset[f_ct])
+    # final_video.append(result_frame)
 
 plt.imshow(morphed_frame[0])
 plt.show()

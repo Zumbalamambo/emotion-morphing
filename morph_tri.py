@@ -20,7 +20,6 @@
 
 import numpy as np
 from scipy.spatial import Delaunay
-from interp2 import interp2
 
 def morph_tri(im1, im2, im1_pts, im2_pts, warp_frac, dissolve_frac):
 
