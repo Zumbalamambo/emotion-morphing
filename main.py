@@ -3,12 +3,12 @@ from video_to_image import video_to_image
 from blending import seamlessCloningPoisson
 from morph_tri import morph_tri
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 import glob
 import matplotlib.pyplot as plt
 
-WARP_FRAC = 0.5
-DISSOLVE_FRAC = 0.5
+WARP_FRAC = 0
+DISSOLVE_FRAC = 0
 
 def create_frames(src, tgt):
     print("Creating source frames")
@@ -39,15 +39,25 @@ for f_ct in range(min(len(src_frames), len(tgt_frames))):
     tgt_mouth, tgt_cc, tgt_offset = get_mouth("tgt", tgt_frames[f_ct], count)
     count += 1
 
-    morphed_frame = morph_tri(src_mouth, tgt_mouth, src_cc, tgt_cc, [WARP_FRAC], [DISSOLVE_FRAC])
+    morphed_frame, warped = morph_tri(src_mouth, tgt_mouth, src_cc, tgt_cc, [WARP_FRAC], [DISSOLVE_FRAC])
 
     ## blend this back into the original image.
-    mask = np.ones((75, 75))
-    result_frame = seamlessCloningPoisson(morphed_frame[0], tgt_frames[f_ct], mask, tgt_offset[0], tgt_offset[1])
-    final_video.append(result_frame)
-    break
+    masked = Image.new('L', (75, 75), 0)
+    points = [(warped[0][0], warped[0][1])]
+    for i in range(4, 28):
+        if i < 11:
+            points.append((warped[i][0], warped[i][1]))
+        if i >= 16 and i < 23:
+             points.append((warped[i][0], warped[i][1]))
 
-plt.imshow(result_frame[0])
-plt.show()
+    ImageDraw.Draw(masked).polygon(points, outline=1, fill=1)
+    mask = np.array(masked)
+    result_frame = seamlessCloningPoisson(morphed_frame[0], tgt_frames[f_ct], mask, tgt_offset[0], tgt_offset[1])
+    pil_image = Image.fromarray(result_frame)
+    pil_image.save("results/frame-" + str(f_ct) + ".jpg")
+    final_video.append(result_frame)
+
+# plt.imshow(final_video[0])
+# plt.show()
 
 
