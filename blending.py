@@ -90,13 +90,11 @@ def reconstructImg(indexes, red, green, blue, targetImg):
 
   A_red = linalg.spsolve(coeffA, red)
   A_red = np.clip(A_red, 0, 255)
-  print("done with red")
   A_green = linalg.spsolve(coeffA, green)
   A_green = np.clip(A_green, 0, 255)
-  print("done with green")
   A_blue = linalg.spsolve(coeffA, blue)
   A_blue = np.clip(A_blue, 0, 255)
-  print("done with blue")
+  print("Solved all RGB channels")
 
   mask_x, mask_y = np.nonzero(indexes)
   for p in range(len(mask_x)):

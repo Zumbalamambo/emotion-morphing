@@ -11,7 +11,7 @@ Output:
     Bottom_lip: (12 x 2)
 '''
 
-bb_dimensions = (75, 75)
+bb_dimensions = (60, 60)
 
 def get_bounding_box(top, bottom):
     data = top + bottom
@@ -51,7 +51,6 @@ def adjust_points_to_bounding_box(mouth, bb):
 def get_mouth(filename, frame, idx):
     frame = frame.astype(np.uint8)
     # Load the jpg file into a numpy array
-    print("Processing frame " + str(idx))
     
     # Find all facial features in all the faces in the image
     # we are only considering the first facial feature
@@ -71,7 +70,7 @@ def get_mouth(filename, frame, idx):
     d.line(adjust_points_to_bounding_box(top_lip, bounding_box))
     d.line(adjust_points_to_bounding_box(bottom_lip, bounding_box))
     d.line(adjust_points_to_bounding_box(bounding_box, bounding_box))
-    pil_image.save("annotated/" + filename + "frame-" + str(idx) + ".jpg")
+    pil_image.save("annotated/%s-frame-%03d.jpg" % (filename, idx))
 
     return pixels, np.array(adjusted), bounding_box[0]
 

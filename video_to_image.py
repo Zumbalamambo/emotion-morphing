@@ -27,7 +27,7 @@ def video_to_image(filename, label):
             if label == "src":
                 image = crop_image(image)
             frames.append(image)
-            cv2.imwrite("frames/" + label + "-frame%d.jpg" % frame_count, image)     # save frame as JPEG file
+            cv2.imwrite("frames/" + label + "-frame%03d.jpg" % frame_count, image)     # save frame as JPEG file
             frame_count += 1
         
     return np.array(frames), frame_count

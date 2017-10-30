@@ -32,9 +32,6 @@ def morph_tri(im1, im2, im1_pts, im2_pts, warp_frac, dissolve_frac):
 
   ## for each frame calculate the change.
   for frame_num in range(len(warp_frac)):
-
-    print("in frame " + str(frame_num))
-
     morphed_frame = np.copy(im1).astype(np.uint8)
 
     ## calculate the intermediate triangle shape
@@ -58,8 +55,6 @@ def morph_tri(im1, im2, im1_pts, im2_pts, warp_frac, dissolve_frac):
 
     ## figure out what triangle each pixel is in
     pixel_triangle_index = int_triangles_s.find_simplex(pixel_positions)
-
-    print(pixel_triangle_index)
 
     ## add the pixel to the appropriate array in triangle_points_matrix
     for idx, index in enumerate(pixel_triangle_index):
