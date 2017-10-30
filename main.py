@@ -2,13 +2,22 @@ from get_mouth import get_mouth
 from video_to_image import video_to_image
 from blending import seamlessCloningPoisson
 from morph_tri import morph_tri
+from matplotlib.animation import FuncAnimation
+
 import numpy as np
 from PIL import Image, ImageDraw
 import glob
 import matplotlib.pyplot as plt
 
+
 WARP_FRAC = 0
 DISSOLVE_FRAC = 0
+
+video = []
+
+def update(frame):
+  plt.imshow(video[0][frame])
+  plt.axis('off')
 
 def create_frames(src, tgt):
     print("Creating source frames")
@@ -57,7 +66,9 @@ for f_ct in range(min(len(src_frames), len(tgt_frames))):
     pil_image.save("results/frame-" + str(f_ct) + ".jpg")
     final_video.append(result_frame)
 
-# plt.imshow(final_video[0])
-# plt.show()
+video.append(final_video)
+fig = plt.figure()
+anim = FuncAnimation(fig, update, frames=np.arange(0, len(src_frames)), interval=3)
+anim.save('result.gif', writer='imagemagick')
 
 
