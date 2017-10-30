@@ -50,8 +50,13 @@ final_video = []
 for f_ct in xrange(min(len(src_mouths, tgt_mouths))):
     morphed_frame = morph_tri(src_mouths[f_ct], tgt_mouths[f_ct], src_cc[f_ct], tgt_cc[f_ct], WARP_FRAC, DISSOLVE_FRAC)
 
+    break
+
     ## blend this back into the original image.
     result_frame = seamlessCloningPoisson(morphed_frame, tgt_frames[f_ct], tgt_offset[f_ct])
     final_video.append(result_frame)
+
+plt.imshow(morphed_frame[0])
+plt.show()
 
 
