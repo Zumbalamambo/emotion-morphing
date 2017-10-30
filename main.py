@@ -37,6 +37,7 @@ for frame in src_frames:
     src_mouths.append(mouth)
     src_cc.append(cc)
     count += 1
+    break
 
 count = 0
 tgt_mouths, tgt_cc, tgt_offset = [], [], []
@@ -46,6 +47,7 @@ for frame in tgt_frames:
     tgt_cc.append(cc)
     tgt_offset.append(offset)
     count += 1
+    break
 
 final_video = []
 for f_ct in xrange(min(len(src_mouths, tgt_mouths))):
