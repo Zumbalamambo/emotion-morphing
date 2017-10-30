@@ -2,8 +2,6 @@ import cv2
 import sys
 import numpy as np
 
-from get_mouth import get_mouth
-
 '''
 Returns an array of frames and the frame count
 '''
@@ -17,16 +15,9 @@ def video_to_image(filename):
         success, image = vidcap.read()
         if (success):
             frames.append(image)
-            cv2.imwrite("frames/frame%d.jpg" % frame_count, image)     # save frame as JPEG file
+            # cv2.imwrite("frames/frame%d.jpg" % frame_count, image)     # save frame as JPEG file
             frame_count += 1
         
     return np.array(frames), frame_count
 
 
-frames, frame_count = video_to_image('videos/obama.mp4')
-print(frame_count)
-
-count = 0
-for frame in frames:
-    get_mouth(frame, count)
-    count += 1

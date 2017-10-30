@@ -1,36 +1,32 @@
-from PIL import Image, ImageDraw
-import face_recognition
+from get_mouth import get_mouth
+from video_to_image import video_to_image
+import numpy as np
 
-# Load the jpg file into a numpy array
-image = face_recognition.load_image_file("trump.jpg")
+# convert the trump video to frames
+frames, frame_count = video_to_image('videos/trump.mp4')
+print(frame_count)
 
-# Find all facial features in all the faces in the image
-face_landmarks_list = face_recognition.face_landmarks(image)
+count = 0
+(tr, tc, _) = frames[0].shape
+ntc = int(tc / 2.0)
+offset = int(ntc / 2.0)
+for frame in frames:
+    # resize each image to 
+    cropped_frame = np.zeros((tr, ntc, 3))
+    for i in range(ntc):
+        cropped_frame[:, i] = frame[:, i + offset]
+    mouth, bb = get_mouth("trump", cropped_frame, count)
+    count += 1
 
-print("I found {} face(s) in this photograph.".format(len(face_landmarks_list)))
+# convert the obama video to frames
+frames, frame_count = video_to_image('videos/obama.mp4')
+print(frame_count)
 
-for face_landmarks in face_landmarks_list:
+count = 0
+for frame in frames:
+    mouth, bb = get_mouth("obama", frame, count)
+    count += 1
 
-    # Print the location of each facial feature in this image
-    facial_features = [
-        'chin',
-        'left_eyebrow',
-        'right_eyebrow',
-        'nose_bridge',
-        'nose_tip',
-        'left_eye',
-        'right_eye',
-        'top_lip',
-        'bottom_lip'
-    ]
 
-    # Let's trace out each facial feature in the image with a line!
-    pil_image = Image.fromarray(image)
-    d = ImageDraw.Draw(pil_image)
 
-    # for facial_feature in facial_features:
-    #     d.line(face_landmarks[facial_feature], width=1)
-    d.line(face_landmarks['top_lip'])
-    d.line(face_landmarks['bottom_lip'])
 
-    pil_image.show()

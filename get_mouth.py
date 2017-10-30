@@ -28,10 +28,10 @@ def get_bounding_box(top, bottom):
     bb_tr = (max_x + offset_x, min_y - offset_y)
     bb_br = (max_x + offset_x, max_y + offset_y)
 
-    return [bb_tl, bb_tr, bb_br, bb_bl, bb_tl]
+    return [bb_tl, bb_tr, bb_br, bb_bl]
 
 
-def get_mouth(frame, idx):
+def get_mouth(filename, frame, idx):
     frame = frame.astype(np.uint8)
     # Load the jpg file into a numpy array
     print("Processing frame " + str(idx))
@@ -51,6 +51,8 @@ def get_mouth(frame, idx):
     d.line(bottom_lip)
     d.line(bounding_box)
 
-    pil_image.save("annotated/frame-" + str(idx) + ".jpg")
+    pil_image.save("annotated/" + filename + "frame-" + str(idx) + ".jpg")
+    mouth = top_lip + bottom_lip
+    return mouth, bounding_box
 
     
