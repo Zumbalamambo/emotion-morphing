@@ -73,35 +73,75 @@ def generate_video_frames():
         tgt_mouth, tgt_cc, tgt_offset = get_mouth("tgt", tgt_frames[f_ct], count)
         count += 1
 
-        warp_33_frac = [0]
-        dissolve_33_frac = [1] * len(warp_33_frac)
+        warp_33_frac = [0.1]
+        dissolve_33_frac = [0.1] * len(warp_33_frac)
         morphed_frame, warped = morph_tri(src_mouth, tgt_mouth, src_cc, tgt_cc, warp_33_frac, dissolve_33_frac)
 
-        ## blend this back into the original image.
-        # masked = Image.new('L', (75, 75), 0)
-        # points = [(warped[0][0], warped[0][1])]
-        # for i in range(4, 28):
-        #     if i < 11:
-        #         points.append((warped[i][0], warped[i][1]))
-        #     if i >= 16 and i < 23:
-        #          points.append((warped[i][0], warped[i][1]))
+        masked = Image.new('L', (60, 60), 0)
+        points = [(warped[0][0], warped[0][1])]
+        for i in range(4, 28):
+            point = (warped[i][0], warped[i][1])
+            if i < 11:
+                points.append(point)
+            if i >= 16 and i < 23:
+                 points.append(point)
 
-        # ImageDraw.Draw(masked).polygon(points, outline=1, fill=1)
-        # mask = np.array(masked)
+        ImageDraw.Draw(masked).polygon(points, outline=1, fill=1)
+        mask1 = np.array(masked)
 
-        mask = np.ones((60, 60))
+        masked = Image.new('L', (60, 60), 0)
+        EXPANSION_OFFSET_X = 15
+        EXPANSION_OFFSET_Y = 3
+        points = [(tgt_cc[0][0], tgt_cc[0][1])]
+        for i in range(4, 28):
+            warped_point = (warped[i][0], warped[i][1])
+            point = (tgt_cc[i][0], tgt_cc[i][1])
+            if i < 11:
+                if i == 4:
+                    if warped_point[0] - point[0] > 10:
+                        points.append((point[0] - (EXPANSION_OFFSET_X * 2), point[1]))
+                    else:
+                        points.append((point[0] - EXPANSION_OFFSET_X, point[1]))
+                elif i == 10:
+                    if point[0] - warped_point[0] > 10:
+                        points.append((point[0] + (EXPANSION_OFFSET_X * 2), point[1]))
+                    else:
+                        points.append((point[0] + EXPANSION_OFFSET_X, point[1]))
+                else:
+                    points.append((point[0], point[1] - EXPANSION_OFFSET_Y))
+            elif i >= 16 and i < 23:
+                if i == 16:
+                    if warped_point[0] - point[0] > 10:
+                        points.append((point[0] - (EXPANSION_OFFSET_X * 2), point[1]))
+                    else:
+                        points.append((point[0] - EXPANSION_OFFSET_X, point[1]))
+                elif i == 22:
+                    if point[0] - warped_point[0] > 10:
+                        points.append((point[0] + (EXPANSION_OFFSET_X * 2), point[1]))
+                    else:
+                        points.append((point[0] + EXPANSION_OFFSET_X, point[1]))
+                else:
+                    points.append((point[0], point[1] + EXPANSION_OFFSET_Y))
+        ImageDraw.Draw(masked).polygon(points, outline=1, fill=1)
+        mask2 = np.array(masked)
+
+
+        union_mask = mask1 | mask2
+
+        # mask = np.ones((60, 60))
+        # blend this back into the original image.
         print("Created " + str(len(morphed_frame)) + " morphed frames")
         for mf_idx in range(len(morphed_frame)):
             pil_image = Image.fromarray(morphed_frame[mf_idx])
             pil_image.save("morphed/frame-%03d-%03d.jpg" % (f_ct, mf_idx))
-            result_frame = seamlessCloningPoisson(morphed_frame[mf_idx], tgt_frames[f_ct], mask, tgt_offset[0], tgt_offset[1])
+            result_frame = seamlessCloningPoisson(morphed_frame[mf_idx], tgt_frames[f_ct], union_mask, tgt_offset[0], tgt_offset[1])
             pil_image = Image.fromarray(result_frame)
             pil_image.save("results/frame-%03d-%03d.jpg" % (f_ct, mf_idx))
 
 
 
 generate_video_frames()
-create_video('output-02-warp')
+create_video('output-02-union-k-adaptive-warp')
 
 # video.append(final_video)
 # fig = plt.figure()
